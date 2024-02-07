@@ -1,61 +1,67 @@
 "use client";
 
+import { createNote } from "@/lib/posts";
 import {
   Button,
   Modal,
-  Sheet,
-  ModalClose,
-  Typography,
-  Textarea,
-  DialogContent,
   DialogTitle,
   FormControl,
   FormLabel,
   Input,
   ModalDialog,
   Stack,
-  FormHelperText,
 } from "@mui/joy";
 import React from "react";
 
 export default function NoteForm() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [formData, setFormData] = React.useState<{}>({});
-  console.log(formData);
+
+  const formDataHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // console.log(formData);
+
+  const submitHandler = async () => {
+    await createNote(formData);
+  };
+
   return (
     <>
-      <Button
-        variant="outlined"
-        color="neutral"
-        // startDecorator={<Add />}
-        onClick={() => setOpen(true)}
-      >
+      <Button variant="outlined" color="neutral" onClick={() => setOpen(true)}>
         Create Note
       </Button>
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog>
           <DialogTitle>Create Note</DialogTitle>
-          {/* <DialogContent>Fill in the information of the project.</DialogContent> */}
           <form
-            onSubmit={(event: any) => {
+            onSubmit={async (event: any) => {
               event.preventDefault();
-              //   setFormData({
-              //     ...formData,
-              //     [event.target.name]: event.target.value,
-              //   });
-              //   console.log(event);
+              await submitHandler();
               setOpen(false);
             }}
           >
             <Stack spacing={2}>
-              <FormControl error>
-                <FormLabel>Name</FormLabel>
-                <Input autoFocus required name="note_name" error />
-                <FormHelperText>Opps! something is wrong.</FormHelperText>
+              <FormControl>
+                <FormLabel>Title</FormLabel>
+                <Input
+                  autoFocus
+                  required
+                  name="title"
+                  onChange={formDataHandler}
+                />
               </FormControl>
               <FormControl>
                 <FormLabel>Description</FormLabel>
-                <Input required name="description" />
+                <Input required name="description" onChange={formDataHandler} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Author</FormLabel>
+                <Input
+                  autoFocus
+                  required
+                  name="author"
+                  onChange={formDataHandler}
+                />
               </FormControl>
               <Button type="submit" variant="outlined" color="neutral">
                 Submit

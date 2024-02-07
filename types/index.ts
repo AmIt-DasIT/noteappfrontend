@@ -2,7 +2,7 @@ import { CardTypeMap } from "@mui/joy";
 export type CardDataType = {
   data: {
     description?: string;
-    id?: number;
+    id?: string;
     title?: string;
     author?: number;
   }[]
@@ -11,7 +11,7 @@ export type CardDataType = {
 export interface CardType extends CardTypeMap {
   data: {
     description?: string;
-    id?: number;
+    id?: string;
     title?: string;
     author?: number;
   };
