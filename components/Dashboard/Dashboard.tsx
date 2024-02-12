@@ -1,13 +1,9 @@
-
-
 import * as React from "react";
 import Box from "@mui/joy/Box";
 import CardLoader from "./CardContainer/CardLoader";
 import ThemeBox from "../ThemeBox";
-import NoteForm from "./NoteForm/NoteForm";
 import { Stack } from "@mui/joy";
 import { Toaster } from "react-hot-toast";
-import { CardDataType } from "@/types";
 
 const ModeSwitcher = React.lazy(() => import("../ModeToggle"));
 const CardContainer = React.lazy(
@@ -15,25 +11,28 @@ const CardContainer = React.lazy(
 );
 
 export default async function Dashboard() {
-  
-
- 
-
   return (
     <ThemeBox>
       <Toaster
-        position="top-center"
+        position="top-right"
         reverseOrder={false}
         gutter={8}
         containerClassName=""
         containerStyle={{}}
         toastOptions={{
-          // Define default options
-          className: "",
-          duration: 5000,
-          style: {
-            background: "#363636",
-            color: "#fff",
+          success: {
+            style: {
+              background: "#dcfce7",
+              color: "black",
+              fontWeight: 600,
+            },
+          },
+          error: {
+            style: {
+              background: "#fecaca",
+              color: "black",
+              fontWeight: 600,
+            },
           },
         }}
       />
@@ -51,11 +50,11 @@ export default async function Dashboard() {
           <React.Suspense fallback={<>Loading...</>}>
             <ModeSwitcher />
           </React.Suspense>
-          <NoteForm />
         </Stack>
         <React.Suspense fallback={<CardLoader />}>
           <CardContainer />
         </React.Suspense>
+        {/* <Gallery /> */}
       </Box>
     </ThemeBox>
   );

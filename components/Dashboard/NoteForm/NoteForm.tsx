@@ -1,6 +1,5 @@
 "use client";
 
-import { createNote } from "@/lib/posts";
 import {
   Button,
   Modal,
@@ -10,66 +9,70 @@ import {
   Input,
   ModalDialog,
   Stack,
+  Textarea,
 } from "@mui/joy";
 import React from "react";
+import Add from "@mui/icons-material/Add";
+import toast from "react-hot-toast";
+import CreateNoteModal from "./CreateNoteModal";
 
-export default function NoteForm() {
+type NoteForm = {
+  setApiCall: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function NoteForm({ setApiCall }: NoteForm) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [formData, setFormData] = React.useState<{}>({});
 
-  const formDataHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  // console.log(formData);
+  const formDataHandler = function (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    return setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const submitHandler = async () => {
-    await createNote(formData);
+    if (!formData) {
+      throw "Please enter some formData";
+    }
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(formData),
+      redirect: "follow",
+    };
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}books`,
+      // @ts-ignore
+      requestOptions
+    );
+
+    if (!response.ok) {
+      toast.error("Somthing Went Wrong.");
+      throw "Error occured";
+    }
+
+    toast.success("New Note Created Successfully.");
+    setApiCall((data) => !data);
+    setOpen(!open);
   };
 
   return (
     <>
-      <Button variant="outlined" color="neutral" onClick={() => setOpen(true)}>
+      <Button
+        variant="outlined"
+        color="neutral"
+        startDecorator={<Add />}
+        onClick={() => setOpen(true)}
+      >
         Create Note
       </Button>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalDialog>
-          <DialogTitle>Create Note</DialogTitle>
-          <form
-            onSubmit={async (event: any) => {
-              event.preventDefault();
-              await submitHandler();
-              setOpen(false);
-            }}
-          >
-            <Stack spacing={2}>
-              <FormControl>
-                <FormLabel>Title</FormLabel>
-                <Input
-                  autoFocus
-                  required
-                  name="title"
-                  onChange={formDataHandler}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Description</FormLabel>
-                <Input required name="description" onChange={formDataHandler} />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Author</FormLabel>
-                <Input
-                  autoFocus
-                  required
-                  name="author"
-                  onChange={formDataHandler}
-                />
-              </FormControl>
-              <Button type="submit" variant="outlined" color="neutral">
-                Submit
-              </Button>
-            </Stack>
-          </form>
-        </ModalDialog>
-      </Modal>
+      <CreateNoteModal open={open} setOpen={setOpen} formDataHandler={formDataHandler} submitHandler={submitHandler}  />
     </>
   );
 }
+
+    
+  

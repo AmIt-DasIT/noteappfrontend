@@ -10,9 +10,10 @@ export type CardDataType = {
 
 export interface CardType extends CardTypeMap {
   data: {
-    description?: string;
+    description: string;
     id?: string;
     title?: string;
     author?: number;
   };
+  setApiCall: React.Dispatch<React.SetStateAction<boolean>>
 }

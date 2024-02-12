@@ -3,7 +3,7 @@ import { getPostBySlug } from "@/lib/posts";
 import { Box } from "@mui/joy";
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  // const data = await getPostBySlug(params.slug);
+  const data = await getPostBySlug({ slug: params.slug });
 
   return (
     <ThemeBox>
@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           p: 2,
         }}
       >
-        {/* My Post: {JSON.stringify(data, null, 2)} */}
+        My Post: {JSON.stringify(data, null, 2)}
       </Box>
     </ThemeBox>
   );
